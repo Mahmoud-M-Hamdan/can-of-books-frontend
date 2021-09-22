@@ -1,6 +1,13 @@
 import React, { Component } from 'react'
 import Book from './Book'
 import axios from 'axios';
+import { withAuth0  } from "@auth0/auth0-react";
+import LoginButton from './LoginButton';
+import LogoutButton from './LogoutButton';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css'
+
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -95,61 +102,74 @@ handleUpdateForm = () => {
   });
 }
 render() {
+
+ 
+
+  
   return (
-    <div>
+    <>
       {
-        !this.state.showUpdate ? <>
-          <form onSubmit={this.handleSubmit}>
-            <input type="texts" placeholder="title" onChange={this.handleTitle} />
-            <input type="texts" placeholder="description" onChange={this.handldescription} />
-            <input type="texts" placeholder="status" onChange={this.handlestatus} />
-            <input type="texts" placeholder="email" onChange={this.handleEmail} />
-            <input type="submit" value="create" />
-          </form>
-        </> :
-          // Update form
-          <form onSubmit={this.handleUpdateForm}>
-            <input
-              type="texts"
-              onChange={this.handleTitle}
-              value={this.state.title}
-            />
-            <input
-              type="texts"
-              onChange={this.handldescription}
-              value={this.state.description}
-            />
-            <input
-              type="texts"
-              onChange={this.handlestatus}
-              value={this.state.status}
-            />
-            <input
-              type="texts"
-              value={this.state.email}
-              onChange={this.handleEmail} />
-            <input type="submit" value="update" />
-          </form>
-      }
-      {
-        this.state.booksList.map(book => {
-          return <Book
-            title={book.title}
-            description={book.description}
-            status={book.status}
-            email={book.email}
-            id={book._id}
-            handleDelete={this.handleDelete}
-            handleUpdate={this.handleUpdate}
-          />
-        })
-      }
-    </div>
+    this.props.auth0.isAuthenticated?
+    <>
+    <LogoutButton/>
+    
+    {
+  !this.state.showUpdate ? <>
+    <form onSubmit={this.handleSubmit}>
+      <input type="texts" placeholder="title" onChange={this.handleTitle} />
+      <input type="texts" placeholder="description" onChange={this.handldescription} />
+      <input type="texts" placeholder="status" onChange={this.handlestatus} />
+      <input type="texts" placeholder="email" onChange={this.handleEmail} />
+      <input type="submit" value="create" />
+    </form>
+  </> :
+    // Update form
+    <form onSubmit={this.handleUpdateForm}>
+      <input
+        type="texts"
+        onChange={this.handleTitle}
+        value={this.state.title}
+      />
+      <input
+        type="texts"
+        onChange={this.handldescription}
+        value={this.state.description}
+      />
+      <input
+        type="texts"
+        onChange={this.handlestatus}
+        value={this.state.status}
+      />
+      <input
+        type="texts"
+        value={this.state.email}
+        onChange={this.handleEmail} />
+      <input type="submit" value="update" />
+    </form>
+}
+{
+  this.state.booksList.map(book => {
+    return <Book
+      title={book.title}
+      description={book.description}
+      status={book.status}
+      email={book.email}
+      id={book._id}
+      handleDelete={this.handleDelete}
+      handleUpdate={this.handleUpdate}
+    />
+  })
+}
+    
+    </>:
+    <LoginButton/>
+  }
+    </>
   )
 }
 }
 
-export default App
+export default withAuth0(App)
 
 
 
